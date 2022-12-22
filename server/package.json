@@ -1,0 +1,17 @@
+{
+  "name": "client",
+  "version": "0.0.1",
+  "description": "backend for birdnest assignment",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Juha Kauppinen",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "node-fetch": "^3.3.0",
+    "xml2js": "^0.4.23"
+  }
+}
