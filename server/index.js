@@ -1,31 +1,25 @@
 const express = require('express');
 const app = express();
-const droneFilter = require('./utils/drones');
-const url = `https://assignments.reaktor.com/birdnest/drones`;
+const Drone = require('./drones/drones');
+const gatherer = require('./dataGathering/dataGathering');
+const parser = require('./utils/xmlParser');
 const PORT = 3001;
+const DATA_STORAGE_TIME = 600000
+let drones = [];
 
 app.get('/', (req, res) => {
   res.send(`Hello there!`)
 });
 
-const fetch = (...args) => 
-  import('node-fetch').then(({default: fetch}) => fetch(...args));
-
-const getData = async () => {
-  try {
-    const result = await fetch(url, {method: 'GET'});
-    const data = await result.text();
-    const drones = await droneFilter.filterDrones(data);
-    console.log(drones);
-  }
-  catch (err) {
-    console.log('Error', err);
-  }
-};
-
-setInterval(() => {
-  getData();
+setInterval( async () => {
+  const droneDataXml = await gatherer.getDroneData();
+  const droneData = await parser.parseXmlToJs(droneDataXml);
+  const badDrones = await Drone.filterDrones(droneData);
+  drones = Drone.updateDroneList(drones, badDrones);
+  console.log('dronelist', drones);
+  // drones = Drone.removeExpiredDrones(drones, DATA_STORAGE_TIME)
 }, 2000);
+
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
