@@ -3,24 +3,25 @@ const app = express();
 const Drone = require('./drones/drones');
 const gatherer = require('./dataGathering/dataGathering');
 const parser = require('./utils/xmlParser');
-const PORT = 3001;
-const DATA_STORAGE_TIME = 600000
+const config = require('./utils/config');
+
 let drones = [];
 
-app.get('/', (req, res) => {
-  res.send(`Hello there!`)
-});
+// Routes
+const droneRoutes = require('./routes/drones');
+app.use('/api/drones', droneRoutes.router);
 
+// Fetching drone data every 2 seconds and processing it
 setInterval( async () => {
   const droneDataXml = await gatherer.getDroneData();
   const droneData = await parser.parseXmlToJs(droneDataXml);
-  const badDrones = await Drone.filterDrones(droneData);
+  const badDrones = await Drone.getDronesInRange(droneData, config.ZONE_CENTER_X, config.ZONE_CENTER_Y, config.NO_DRONE_ZONE_RADIUS);
   drones = Drone.updateDroneList(drones, badDrones);
-  console.log('dronelist', drones);
-  // drones = Drone.removeExpiredDrones(drones, DATA_STORAGE_TIME)
+  drones = Drone.removeExpiredDrones(drones, config.DATA_STORAGE_TIME)
+  droneRoutes.updateDroneData(drones)
+  console.log(drones)
 }, 2000);
 
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(config.PORT, () => {
+  console.log(`Server running on port ${config.PORT}`);
 });

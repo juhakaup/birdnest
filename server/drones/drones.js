@@ -1,14 +1,10 @@
-const NO_DRONE_ZONE_RADIUS = 100000;
-const CAPTURE_DEVICE_POS_X = 250000;
-const CAPTURE_DEVICE_POS_Y = 250000;
-
-const filterDrones = async (data) => {
+const getDronesInRange = async (data, posX, posY, range) => {
   const date = new Date(data.report.capture.$.snapshotTimestamp)
   
   let violatingDrones = [];
   data.report.capture.drone.forEach(drone => {
-    nestDistance = distance2D(drone.positionX, drone.positionY, CAPTURE_DEVICE_POS_X, CAPTURE_DEVICE_POS_Y);
-    if (nestDistance <= NO_DRONE_ZONE_RADIUS) {
+    nestDistance = distance2D(drone.positionX, drone.positionY, posX, posY);
+    if (nestDistance <= range) {
       violatingDrones.push({
         serialNumber: drone.serialNumber,
         nestDistance: nestDistance,
@@ -53,4 +49,4 @@ const distance2D = (pos1X, pos1Y, pos2X, pos2Y) => {
   return dist;
 };
 
-module.exports = { filterDrones, removeExpiredDrones, updateDroneList }
+module.exports = { getDronesInRange, removeExpiredDrones, updateDroneList }

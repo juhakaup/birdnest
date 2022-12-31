@@ -1,6 +1,6 @@
 const drones = require('../drones/drones')
 
-testData = 
+serverTestData = 
 {
   report: {
     deviceInformation: {
@@ -38,18 +38,6 @@ testData =
           altitude: '4264.283030546847'
         },
         {
-          serialNumber: 'SN-6bbyKxYoPd',
-          model: 'Falcon',
-          manufacturer: 'MegaBuzzer Corp',
-          mac: 'c1:1f:01:2d:8e:77',
-          ipv4: '171.27.73.21',
-          ipv6: 'd050:cf65:54ee:15f7:d9c6:db06:61b1:8ae0',
-          firmware: '8.6.1',
-          positionY: '318986.65864460455',
-          positionX: '382584.54860719707',
-          altitude: '4054.4436681637744'
-        },
-        {
           serialNumber: 'SN-oEeTFMCenv',
           model: 'HRP-DRP 1 Pro',
           manufacturer: 'ProDröne Ltd',
@@ -66,10 +54,45 @@ testData =
   }
 };
 
+droneList = []
 
-test('drone filtering works', async () => {
-  const result = await drones.filterDrones(testData);
+newDrone = {
+    serialNumber: 'SN-newDrone',
+    nestDistance: 50000,
+    positionX: '220000.0',
+    positionY: '210000.0',
+    captureTime: '2022-12-30T12:21:27.332Z'
+  }
 
-  expect(result.length).toBe(1);
-  expect(result[0].serialNumber).toBe('SN-testdronetwo');
-});
+newDroneUpdated = {
+  serialNumber: 'SN-newDrone',
+  nestDistance: 0,
+  positionX: '250000.0',
+  positionY: '250000.0',
+  captureTime: '2022-12-30T12:21:27.332Z'
+}
+
+
+describe('Drone service', () => {
+  describe('Filtering drone data', () => {
+    it('should return drone that is within range', async () => {
+      const result = await drones.getDronesInRange(serverTestData, 250000, 250000, 100000);
+      expect(result.length).toBe(1);
+      expect(result[0].serialNumber).toBe('SN-testdronetwo');
+    })
+  })
+  describe('Adding drone to array of drones', () => {
+    it('should add drone to the array, if no drone with same serial number exists', () => {
+      const result = drones.updateDroneList(droneList, [newDrone]);
+      expect(result.length).toBe(1);
+      expect(result[0].serialNumber).toBe('SN-newDrone');
+    }),
+    it('should update drone informaton in the list, if drone exists', () => {
+      dlist = drones.updateDroneList(droneList, [newDrone])
+      const result = drones.updateDroneList(dlist, [newDroneUpdated]);
+      expect(result.length).toBe(1);
+      expect(result[0].serialNumber).toBe('SN-newDrone');
+      expect(result[0].nestDistance < 50000).toBeTruthy();
+    })
+  })
+})
