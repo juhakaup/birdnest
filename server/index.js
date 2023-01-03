@@ -4,8 +4,10 @@ const Drone = require('./drones/drones');
 const gatherer = require('./dataGathering/dataGathering');
 const parser = require('./utils/xmlParser');
 const config = require('./utils/config');
+const cors = require('cors')
 
 let drones = [];
+app.use(cors())
 
 // Routes
 const droneRoutes = require('./routes/drones');
