@@ -1,0 +1,33 @@
+.main-container {
+  max-width: 900px;
+  margin: auto;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px lightblue solid;
+}
+
+tr {
+  border-bottom: 1px solid #ddd;
+}
+
+th, td {
+  text-align: center;
+  padding: 5px;
+  font-size: 16px;
+}
+
+th {
+  background: #d7ecff;
+}
+
+td {
+  background: #f0f8ff;
+}
+
+tr.expanded-row {
+  border-radius: 10px;
+  background: blue;
+}

@@ -1,13 +1,18 @@
 import Table from "./components/Table";
 import { useState, useEffect } from "react";
+import './App.css'
 
 function App() {
   const [droneList, setDroneList] = useState([]);
 
   const fetchDroneData = async () => {
-    const res = await fetch('http://localhost:3001/api/drones');
-    const data = await res.json()
-    setDroneList(data);
+    try {
+      const res = await fetch('http://localhost:3001/api/drones');
+      const data = await res.json()
+     setDroneList(data);
+    } catch (error) {
+      console.error('Error getting done data ', error);
+    }
   }
 
   useEffect(() => {
@@ -18,7 +23,7 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
+    <div className="main-container">
       <h1>Birdnest</h1>
       <Table content={droneList} ></Table>
     </div>
