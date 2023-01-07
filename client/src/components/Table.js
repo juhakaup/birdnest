@@ -1,15 +1,15 @@
-import { Fragment, useState } from "react"
+import { useEffect, Fragment, useState } from "react"
 
-const ExpandedRow = ({ content, expandedItem }) => {
-  if (content.serialNumber === expandedItem) {
-    const data = {
-      pilotId: "P-ZOo0Fo7y6k",
-      firstName: "Kari",
-      lastName: "Cartwright",
-      phoneNumber: "+210649698295",
-      createdDt: "2022-07-12T02:13:50.640Z",
-      email: "kari.cartwright@example.com"
-      }
+const ExpandedRow = ({ content, expandedItem, loading, data }) => {
+  if (content.serialNumber === expandedItem && loading) return (
+    (
+      <tr key={data.pilotId} className="expanded-row">
+        <td>Loading...</td><td></td><td></td>
+      </tr>
+    )
+  )
+
+  if (content.serialNumber === expandedItem && !loading) {
     return (
       <tr key={data.pilotId} className="expanded-row">
         <td>Pilot Id: {data.pilotId} <br /> Created: {data.createdDt}</td>
@@ -22,6 +22,26 @@ const ExpandedRow = ({ content, expandedItem }) => {
 
 const Table = ({ content }) => {
   const [expandedItem, setExpandedItem] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const getPilot = async () => {
+      setLoading(true)
+      try {
+          const res = await fetch('http://localhost:3001/api/pilots/'+ expandedItem);
+          const data = await res.json()
+          console.log(data)
+          setData(data);
+          setLoading(false);
+        } catch (error) {
+          console.error('Error getting done data ', error);
+          setLoading(false)
+          setExpandedItem('')
+        }
+    }
+    getPilot();
+  }, [expandedItem])
 
   return (
       <table>
@@ -38,12 +58,12 @@ const Table = ({ content }) => {
           const dateString = `${time.getDate()}.${time.getMonth()+1}.${time.getFullYear()}-${time.getHours()}:${time.getMinutes().toString().slice(-2)}`;
           return (
             <Fragment>
-              <tr key={index} onClick={() => setExpandedItem(content.serialNumber)}>
+              <tr key={index} onClick={() => {setExpandedItem(content.serialNumber)}}>
                 <td>{content.serialNumber}</td>
                 <td>{dateString}</td>
                 <td>{(content.nestDistance / 1000).toFixed(2)}m</td>
               </tr>
-              <ExpandedRow content={content} expandedItem={expandedItem} />
+              <ExpandedRow content={content} expandedItem={expandedItem} loading={loading} data={data}/>
             </Fragment>
           )}) }
       </tbody>
