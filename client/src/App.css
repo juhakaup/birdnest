@@ -1,6 +1,7 @@
 .main-container {
   max-width: 900px;
   margin: auto;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 table {
@@ -9,25 +10,45 @@ table {
   border: 1px lightblue solid;
 }
 
-tr {
-  border-bottom: 1px solid #ddd;
-}
-
-th, td {
-  text-align: center;
-  padding: 5px;
-  font-size: 16px;
+.table-row-normal {
+  border-bottom: 2px solid #ddd;
+  background: #f0f8ff;
 }
 
 th {
   background: #d7ecff;
 }
 
+.td-normal {
+  padding: 6px;
+  font-size: 16px;
+}
+
 td {
+  cursor: pointer;
+}
+
+.expanded-row {
+  border-bottom: 3px solid #ddd;
   background: #f0f8ff;
 }
 
-tr.expanded-row {
-  border-radius: 10px;
-  background: blue;
+.expanded-row td {
+  padding-bottom: 15px;
+  padding-top: 5px;
+  text-align: center;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 15px;
+}
+
+.align-center {
+  text-align: center;
+}
+
+.align-left {
+  text-align: left;
+}
+
+.align-right {
+  text-align: right;
 }

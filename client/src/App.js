@@ -25,6 +25,8 @@ function App() {
   return (
     <div className="main-container">
       <h1>Birdnest</h1>
+      <p>Drone monitoring service</p>
+      <h2>Drones violating the 'no-drone-zone':</h2>
       <Table content={droneList} ></Table>
     </div>
   );
