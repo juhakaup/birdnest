@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "start-dev": "nodemon index.js",
     "test": "jest"
   },
   "author": "Juha Kauppinen",
@@ -19,6 +20,7 @@
   "devDependencies": {
     "cross-env": "^7.0.3",
     "jest": "^29.3.1",
+    "nodemon": "^2.0.20",
     "supertest": "^6.3.3"
   },
   "jest": {

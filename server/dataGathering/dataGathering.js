@@ -1,4 +1,5 @@
-const url = `https://assignments.reaktor.com/birdnest/drones`;
+const config = require('../utils/config')
+const url = config.DRONE_URL;
 
 const fetch = (...args) => 
   import('node-fetch').then(({default: fetch}) => fetch(...args));
