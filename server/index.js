@@ -15,6 +15,9 @@ const pilotRoutes = require('./routes/pilots');
 app.use('/api/drones', droneRoutes.router);
 app.use('/api/pilots', pilotRoutes.router);
 
+// Frontend
+app.use(express.static('build'));
+
 // Fetching drone data every 2 seconds and processing it
 setInterval( async () => {
   try {
