@@ -1,4 +1,5 @@
 import Table from "./components/Table";
+import DroneMap from "./components/DroneMap";
 import { useState, useEffect } from "react";
 import './App.css'
 const droneUrl = (process.env.NODE_ENV !== 'production') 
@@ -30,11 +31,14 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
+  
+
   return (
     <div className="main-container">
       <h1>Birdnest</h1>
       <p>Drone monitoring service</p>
       <h3>Drones violating the 'no-drone-zone' during the last 10 minutes:</h3>
+      <DroneMap drones={droneList}/>
       <Table content={droneList} ></Table>
       {loading && <h2>Loading...</h2>}
     </div>
