@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { Icon } from "leaflet";
 import "../App.css";
@@ -8,9 +7,7 @@ const droneIcon = new Icon({
     iconSize: [30,30]
   });
 
-const DroneMap = ({ drones }) => {
-  const [activeDrone, setActiveDrone] = useState(null);
-
+const DroneMap = ({ drones, selectedDrone, setSelectedDrone, loading, pilotData }) => {
   return (
     <MapContainer center={[25.0, 25.0]} zoom={13} scrollWheelZoom={true}>
       <TileLayer
@@ -24,18 +21,25 @@ const DroneMap = ({ drones }) => {
           icon={droneIcon}
           eventHandlers={{
             click: () => {
-              setActiveDrone(drone)
+              setSelectedDrone(drone);
             },
           }}
         >
 
         </Marker>
       ))};
-      {activeDrone && (
-        <Popup position={[activeDrone.positionX/10000, activeDrone.positionY/10000]}>
+      {selectedDrone && (
+        <Popup position={[selectedDrone.positionX/10000, selectedDrone.positionY/10000]}>
           <div>
-            <h3>{activeDrone.serialNumber}</h3>
+            <h3>{selectedDrone.serialNumber}</h3>
           </div>
+          {!loading ? (
+          <div>
+              Pilot Id: {pilotData.pilotId} <br/>
+              Name: {pilotData.firstName} {pilotData.lastName} <br/>
+              email: {pilotData.email} <br /> Phone: {pilotData.phoneNumber}
+          </div>
+          ) : <div>Loading...</div>}
         </Popup>
       )}
   </MapContainer>

@@ -4,31 +4,9 @@ const pilotUrl = (process.env.NODE_ENV !== 'production')
   : '/api/pilots/';
 
 // Displays the drones in a list, fetches pilot data and displays it below the selected drone.
-const Table = ({ content }) => {
-  const [expandedItem, setExpandedItem] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [data, setData] = useState([]);
+const Table = ({ droneList, selectedDrone, setSelectedDrone, loading, pilotData }) => {
   const rarrow = <Fragment>&#11166;</Fragment>
   const darrow = <Fragment>&#11167;</Fragment>
-
-  useEffect(() => {
-    const getPilot = async () => {
-      if (expandedItem) {
-        setLoading(true)
-        try {
-            const res = await fetch(pilotUrl + expandedItem);
-            const data = await res.json()
-            setData(data);
-            setLoading(false);
-          } catch (error) {
-            console.error('Error getting pilot information', error);
-            setLoading(false)
-            setExpandedItem('')
-          }
-      }
-    }
-    getPilot();
-  }, [expandedItem])
 
   return (
       <table>
@@ -40,16 +18,16 @@ const Table = ({ content }) => {
         </tr>
       </thead>
       <tbody>
-        { content.map((content, index) => {
-          const dateString = makeDateString(content.captureTime);
+        { droneList.map((drone, index) => {
+          const dateString = makeDateString(drone.captureTime);
           return (
             <Fragment>
-              <tr key={index} className="table-row-normal" onClick={() => {setExpandedItem(content.serialNumber)}}>
-                <td className="td-normal">{content.serialNumber === expandedItem ? darrow : rarrow} {content.serialNumber}</td>
+              <tr key={index} className="table-row-normal" onClick={() => {setSelectedDrone(drone)}}>
+                <td className="td-normal">{selectedDrone && (selectedDrone.serialNumber === drone.serialNumber) ? darrow : rarrow} {drone.serialNumber}</td>
                 <td className="align-center">{dateString}</td>
-                <td className="align-right">{(content.nestDistance / 1000).toFixed(2)}m</td>
+                <td className="align-right">{(drone.nestDistance / 1000).toFixed(2)}m</td>
               </tr>
-              {content.serialNumber === expandedItem && <ExpandedRow loading={loading} data={data}/> } 
+              {selectedDrone && (selectedDrone.serialNumber === drone.serialNumber) && <ExpandedRow loading={loading} data={pilotData}/> } 
             </Fragment>
           )}) }
       </tbody>
