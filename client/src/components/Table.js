@@ -1,7 +1,4 @@
-import { useEffect, Fragment, useState } from "react"
-const pilotUrl = (process.env.NODE_ENV !== 'production') 
-  ? 'http://localhost:8080/api/pilots/' 
-  : '/api/pilots/';
+import { Fragment,  } from "react"
 
 // Displays the drones in a list, fetches pilot data and displays it below the selected drone.
 const Table = ({ droneList, selectedDrone, setSelectedDrone, loading, pilotData }) => {
@@ -21,8 +18,8 @@ const Table = ({ droneList, selectedDrone, setSelectedDrone, loading, pilotData 
         { droneList.map((drone, index) => {
           const dateString = makeDateString(drone.captureTime);
           return (
-            <Fragment>
-              <tr key={index} className="table-row-normal" onClick={() => {setSelectedDrone(drone)}}>
+            <Fragment key={index}>
+              <tr key={drone.serialNumber} className="table-row-normal" onClick={() => {setSelectedDrone(drone)}}>
                 <td className="td-normal">{selectedDrone && (selectedDrone.serialNumber === drone.serialNumber) ? darrow : rarrow} {drone.serialNumber}</td>
                 <td className="align-center">{dateString}</td>
                 <td className="align-right">{(drone.nestDistance / 1000).toFixed(2)}m</td>

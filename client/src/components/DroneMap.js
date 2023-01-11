@@ -7,29 +7,39 @@ const droneIcon = new Icon({
     iconSize: [30,30]
   });
 
+const nestIcon = new Icon({
+  iconUrl: "./nest-svgrepo-com.svg",
+  iconSize: [30,30]
+});
+
+const nestPos = [60.210075, 25.009575];
+
 const DroneMap = ({ drones, selectedDrone, setSelectedDrone, loading, pilotData }) => {
   return (
-    <MapContainer center={[25.0, 25.0]} zoom={13} scrollWheelZoom={true}>
+    <MapContainer center={nestPos} zoom={17} scrollWheelZoom={true}>
       <TileLayer
       attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
+      {/* Marker for the nest */}
+      <Marker key={'nest'} position={nestPos} icon={nestIcon}/>
+
+      {/* Markers for the drones */}
       {drones.map(drone => (
         <Marker 
           key={drone.serialNumber} 
-          position={[drone.positionX/10000, drone.positionY/10000]}
+          position={ approximateGeoCoord(drone.positionX, drone.positionY) }
           icon={droneIcon}
-          eventHandlers={{
-            click: () => {
-              setSelectedDrone(drone);
-            },
-          }}
-        >
-
-        </Marker>
+          eventHandlers={{ click: () => setSelectedDrone(drone) }}
+        />
       ))};
+
+      {/* Popup for the selected drone */}
       {selectedDrone && (
-        <Popup position={[selectedDrone.positionX/10000, selectedDrone.positionY/10000]}>
+        <Popup 
+          position={approximateGeoCoord(selectedDrone.positionX, selectedDrone.positionY)}
+          eventHandlers={{ remove: () => setSelectedDrone(null) }}
+        >
           <div>
             <h3>{selectedDrone.serialNumber}</h3>
           </div>
@@ -44,6 +54,11 @@ const DroneMap = ({ drones, selectedDrone, setSelectedDrone, loading, pilotData 
       )}
   </MapContainer>
   )
+}
+
+const approximateGeoCoord = (distX, distY) => {
+  // Approximate the distances in geocoordinates around the nest position.
+  return [nestPos[0] + 1/111111111*(distY-250000), nestPos[1] + 1/55555555*(distX-250000)]
 }
 
 export default  DroneMap;
