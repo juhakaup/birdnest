@@ -53,7 +53,9 @@ const ExpandedRow = ({ loading, data }) => {
 // Creates a usable string from date data
 const makeDateString = (str) => {
   const time = new Date(str);
-  return (`${time.getDate()}.${time.getMonth()+1}.${time.getFullYear()}-${time.getHours()}:${time.getMinutes().toString().slice(-2)}`);
+  return (
+    `${time.getDate()}.${time.getMonth()+1}.${time.getFullYear()}-${time.getHours()}:${(0+time.getMinutes().toString()).slice(-2)}`
+  );
 }
 
 export default Table;
