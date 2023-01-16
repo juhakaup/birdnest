@@ -1,7 +1,7 @@
-const getDronesInRange = async (data, posX, posY, range) => {
+const getDronesInRange = (data, posX, posY, range) => {
   const date = new Date(data.report.capture.$.snapshotTimestamp)
-  
   let violatingDrones = [];
+  
   data.report.capture.drone.forEach(drone => {
     nestDistance = distance2D(drone.positionX, drone.positionY, posX, posY);
     if (nestDistance <= range) {

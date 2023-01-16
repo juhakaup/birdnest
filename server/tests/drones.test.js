@@ -1,4 +1,4 @@
-const drones = require('../drones/drones')
+const drones = require('../utils/drones')
 
 serverTestData = 
 {

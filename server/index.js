@@ -1,39 +1,21 @@
 const express = require('express');
 const app = express();
-const Drone = require('./drones/drones');
-const gatherer = require('./dataGathering/dataGathering');
-const parser = require('./utils/xmlParser');
 const config = require('./utils/config');
 const cors = require('cors')
+const dg = require('./utils/dataGathering')
 
-let drones = [];
-app.use(cors())
+// Starts the data gathering
+dg.gatherData();
 
 // Routes
-const droneRoutes = require('./routes/drones');
-const pilotRoutes = require('./routes/pilots');
-app.use('/api/drones', droneRoutes.router);
-app.use('/api/pilots', pilotRoutes.router);
+const droneRoutes = require('./controllers/drones');
+const pilotRoutes = require('./controllers/pilots');
 
-// Frontend
+// middleware
+app.use(cors())
+app.use('/api/drones', droneRoutes);
+app.use('/api/pilots', pilotRoutes);
 app.use(express.static('build'));
-
-// Fetching drone data every 2 seconds and processing it
-setInterval( async () => {
-  try {
-    const droneDataXml = await gatherer.getDroneData();
-    const droneData = await parser.parseXmlToJs(droneDataXml);
-    const badDrones = await Drone.getDronesInRange(droneData, config.ZONE_CENTER_X, config.ZONE_CENTER_Y, config.NO_DRONE_ZONE_RADIUS);
-    drones = Drone.updateDroneList(drones, badDrones);
-    drones = Drone.removeExpiredDrones(drones, config.DATA_STORAGE_TIME);
-    droneRoutes.updateDroneData(drones);
-    pilotRoutes.updateDroneData(drones);
-    // console.log(drones)
-  } catch (error) {
-    console.error(error);
-  }
-  
-}, 2000);
 
 app.listen(config.PORT, () => {
   console.log(`Server running on port ${config.PORT}`);
